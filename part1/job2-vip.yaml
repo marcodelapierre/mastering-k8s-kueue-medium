@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vip-job
+  labels:
+    kueue.x-k8s.io/queue-name: "main-entrance-lq"
+    kueue.x-k8s.io/priority-class: "vip"
+spec:
+  parallelism: 4 # Needs 4 tables
+  completions: 4
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["60s"]
+        resources:
+          requests: { cpu: 1 }
+      restartPolicy: Never

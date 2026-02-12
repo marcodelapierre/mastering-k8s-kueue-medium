@@ -1,0 +1,23 @@
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "restaurant-cq"
+spec:
+  namespaceSelector: {} # Allow all namespaces
+  preemption:
+    withinClusterQueue: "LowerPriority" # Allow higher priority to preempt lower
+  resourceGroups:
+  - coveredResources: ["cpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 8 # All 8 tables are available
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: "default"
+  name: "main-entrance-lq"
+spec:
+  clusterQueue: "restaurant-cq"

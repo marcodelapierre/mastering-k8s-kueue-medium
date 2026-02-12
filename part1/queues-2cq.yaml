@@ -1,0 +1,46 @@
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "vip-lounge-cq"
+spec:
+  namespaceSelector: {}
+  resourceGroups:
+  - coveredResources: ["cpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 4 # 4 dedicated tables for VIPs
+
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "general-dining-cq"
+spec:
+  namespaceSelector: {}
+  resourceGroups:
+  - coveredResources: ["cpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 4 # 4 dedicated tables for Walk-ins
+
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: "default"
+  name: "vip-entrance-lq"
+spec:
+  clusterQueue: "vip-lounge-cq"
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: LocalQueue
+metadata:
+  namespace: "default"
+  name: "general-entrance-lq"
+spec:
+  clusterQueue: "general-dining-cq"
+

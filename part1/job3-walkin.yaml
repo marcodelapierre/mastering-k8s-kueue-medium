@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: walk-in-job-bis
+  labels:
+    kueue.x-k8s.io/queue-name: "general-entrance-lq"
+    #kueue.x-k8s.io/priority-class: "walk-in"
+spec:
+  parallelism: 4 # Takes all 8 tables
+  completions: 4
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["600s"]
+        resources:
+          requests: 
+            cpu: 1 
+      restartPolicy: Never
