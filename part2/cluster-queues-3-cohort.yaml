@@ -1,0 +1,62 @@
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "vip-lounge-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  preemption:
+    reclaimWithinCohort: "Any" # Most aggressive, all borrowers will be preempted
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 6
+        lendingLimit: 5
+      - name: "memory"
+        nominalQuota: "5Gi"
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "members-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  preemption:
+    reclaimWithinCohort: "LowerPriority" # Will only preempt lower-priority borrowers
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 2
+      - name: "memory"
+        nominalQuota: "1Gi"
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "general-dining-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  preemption:
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 0
+        borrowingLimit: 6
+      - name: "memory"
+        nominalQuota: 0
+        borrowingLimit: "6Gi"
+

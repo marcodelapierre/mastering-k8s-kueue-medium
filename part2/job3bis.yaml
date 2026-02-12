@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: member-job-bis
+  labels:
+    kueue.x-k8s.io/queue-name: "members-entrance-lq"
+    #making sure our members have proper priority
+    kueue.x-k8s.io/priority-class: "high"
+spec:
+  parallelism: 2
+  completions: 2
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["300s"]
+        resources:
+          requests:
+            cpu: 1
+      restartPolicy: Never
+
