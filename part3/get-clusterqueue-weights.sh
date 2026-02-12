@@ -1,0 +1,1 @@
+kubectl get clusterqueue -o go-template='{{range .items}}Name:{{.metadata.name}}{{"\n"}}Weight:{{.spec.fairSharing.weight}}{{"\n"}}Weighted Share:{{.status.fairSharing.weightedShare}}{{"\n\n"}}{{end}}'

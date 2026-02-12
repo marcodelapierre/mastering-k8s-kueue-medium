@@ -1,0 +1,11 @@
+...
+#add the following lines in the controller_manager_config.yaml section
+...
+apiVersion: v1
+data:
+  controller_manager_config.yaml: |
+    apiVersion: config.kueue.x-k8s.io/v1beta1
+...
+    fairSharing:
+      #enable: true
+      preemptionStrategies: [LessThanOrEqualToFinalShare, LessThanInitialShare]

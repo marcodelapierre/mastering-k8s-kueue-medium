@@ -1,0 +1,81 @@
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: Cohort
+metadata:
+  name: "restaurant"
+spec:
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 8
+      - name: "memory"
+        nominalQuota: "6Gi" 
+
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "vip-lounge-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  fairSharing:
+    weight: 10
+  preemption:
+    reclaimWithinCohort: "Any" 
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 0
+
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "members-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  fairSharing:
+    weight: 1
+  preemption:
+    reclaimWithinCohort: "Any" 
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 0
+      - name: "memory"
+        nominalQuota: "0Gi"
+
+---
+apiVersion: kueue.x-k8s.io/v1beta1
+kind: ClusterQueue
+metadata:
+  name: "general-dining-cq"
+spec:
+  namespaceSelector: {}
+  cohort: "restaurant"
+  fairSharing:
+    weight: 0
+  preemption:
+    withinClusterQueue: "LowerPriority"
+  resourceGroups:
+  - coveredResources: ["cpu", "memory"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 0
+      - name: "memory"
+        nominalQuota: 0
+

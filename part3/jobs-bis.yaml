@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: general-diner-job-bis
+  labels:
+    kueue.x-k8s.io/queue-name: "general-entrance-lq"
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["60s"]
+        resources:
+          requests:
+            cpu: 1
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: member-job-bis
+  labels:
+    kueue.x-k8s.io/queue-name: "members-entrance-lq"
+spec:
+  parallelism: 1
+  completions: 1
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["60s"]
+        resources:
+          requests:
+            cpu: 1
+      restartPolicy: Never
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vip-job-bis
+  labels:
+    kueue.x-k8s.io/queue-name: "vip-entrance-lq"
+spec:
+  parallelism: 7
+  completions: 7
+  template:
+    spec:
+      containers:
+      - name: dummy-job
+        image: gcr.io/k8s-staging-perf-tests/sleep:v0.1.0
+        args: ["60s"]
+        resources:
+          requests:
+            cpu: 1
+      restartPolicy: Never
+
