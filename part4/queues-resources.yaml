@@ -1,0 +1,39 @@
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: ResourceFlavor
+metadata:
+  name: "default-flavor"
+---
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: ClusterQueue
+metadata:
+  name: "vip-lounge-cq"
+spec:
+  queueingStrategy: StrictFIFO
+  #This parameter activates the AFS logic on this specific ClusterQueue
+  admissionScope:
+    admissionMode: UsageBasedAdmissionFairSharing
+  namespaceSelector: {}
+  resourceGroups:
+  - coveredResources: ["cpu"]
+    flavors:
+    - name: "default-flavor"
+      resources:
+      - name: "cpu"
+        nominalQuota: 4
+---
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: LocalQueue
+metadata:
+  namespace: "default"
+  name: "early-bird-lq"
+spec:
+  clusterQueue: "vip-lounge-cq"
+---
+apiVersion: kueue.x-k8s.io/v1beta2
+kind: LocalQueue
+metadata:
+  namespace: "default"
+  name: "late-arrival-lq"
+spec:
+  clusterQueue: "vip-lounge-cq"
+

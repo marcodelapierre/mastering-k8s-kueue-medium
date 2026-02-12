@@ -1,0 +1,17 @@
+...
+#add the following lines in the controller_manager_config.yaml section
+...
+apiVersion: v1
+data:
+  controller_manager_config.yaml: |
+    apiVersion: config.kueue.x-k8s.io/v1beta1
+...
+    #featureGates:
+    #  AdmissionFairSharing: true
+    admissionFairSharing:
+      usageHalfLifeTime: "2h"
+      usageSamplingInterval: "5s"
+      resourceWeights:
+         cpu: 1.0  
+         #cpu: 2.0 # cpu usage is twice more important than memory usage
+         #memory: 1.0

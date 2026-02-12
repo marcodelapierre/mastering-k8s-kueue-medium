@@ -1,0 +1,11 @@
+12 Feb 2026
+
+Historical usage keeps showing "0" for "cpu" within consumed resources.
+I DON'T UNDERSTAND WHY.
+As a result, admission fair sharing is not applied, as local queues keep being all equal in historic usage.
+
+I am wondering whether it is a bug, considering the feature is still in beta.
+
+I updated api version to beta 2, nothing, then doubled the runtimes to 120s. Then, early bird history was non zero, though decreasing back to zero very quickly. late arrival history kept being zero even after usage.
+
+What a mess, to be honest this feature seems still quite buggy.

@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  labels:
+    kueue.x-k8s.io/queue-name: "early-bird-lq"
+spec:
+  template:
+    spec:
+      containers:
+      - name: worker
+        image: alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - "sleep 120"
+        resources:
+          requests:
+            cpu: 2
+      restartPolicy: OnFailure
+  backoffLimit: 4
+---
+
